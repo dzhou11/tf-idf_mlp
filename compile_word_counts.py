@@ -48,8 +48,8 @@ def main():
         return
     dialog=get_dialogs(dialog)
     result=counts(dialog)
-    json_out=json.dumps(out,indent=4)
-    if filename != None:
+    json_out=json.dumps(result,indent=4)
+    if args.o != None:
         with open(args.o,'w')as out:
             out.write(json_out)
     return
