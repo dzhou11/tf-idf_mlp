@@ -1,6 +1,7 @@
 import pandas as pd
 import argparse
 import json
+import math
 
 
 canonical_ponys=['twilight','applejack','rarity','pinkie','rainbow','fluttershy']
@@ -8,12 +9,9 @@ ponys_fullname=['Twilight Sparkle', 'Applejack','Rarity', 'Pinkie Pie', 'Rainbow
 full_to_can={'Twilight Sparkle':'twilight','Applejack':'applejack','Rarity':'rarity','Pinkie Pie':'pinkie','Rainbow Dash':'rainbow','Fluttershy':'fluttershy'}
 
 def load_json(fname):
-    content=[]
     with open(fname, 'r') as content_file:
-        for jsonObj in content_file:
-            Dict = json.loads(jsonObj)
-            content.append(Dict)
-    return content
+        Dict = json.load(content_file)
+    return Dict
 
 def cal_idf(b):
     N=0
@@ -55,7 +53,7 @@ def main():
     count=load_json(args.word_count)
     idf=cal_idf(count)
     tf_idf=tfidf(count,idf)
-    result=take_top_n(tf_idf, args.out_num)
+    result=take_top_n(tf_idf, int(args.out_num))
     
     json_out=json.dumps(result,indent=4)
     print(json_out)
