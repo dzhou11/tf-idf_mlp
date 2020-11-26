@@ -16,7 +16,10 @@ def get_dialogs(df):
         temp=df[df['pony']==pony]['dialog']
         out = ' '.join(temp.astype(str))
         out=re.sub("\<U\+[0-9]{4}\>"," ",out)
-        words=re.sub("[^\w]", " ",out).split()
+        to_delete = "'~`@$%^*_+={}|\"/<>"
+        
+        words=re.sub(r'[^\w'+to_delete+']', " ",out).split()
+
         words=[word.lower() for word in words if (word.isalpha())]
         result[full_to_can[pony]]=words
     return result
