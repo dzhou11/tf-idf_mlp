@@ -29,6 +29,24 @@ def cal_idf(b):
         idf[word]=math.log(N/idf[word])
 
     return idf
+def cal_idf_p(b):
+    N=6 
+    wordsUnique=[]
+    ponys_wordset={ key: set(b[key].keys()) for key in b }
+    for dic in list(b.values()):
+        wordsUnique.extend(dic.keys())
+    wordsUnique=set(wordsUnique)
+    idf={key:0 for key in wordsUnique}
+    
+    
+    for pony in b:
+        for word in b[pony].keys():
+            idf[word]+=1
+    for word in idf:
+        idf[word]=math.log(N/idf[word])
+
+    return idf 
+
 def tfidf(b,idf):
     tfidfs=dict.fromkeys(b)
     for pony in tfidfs:
@@ -41,17 +59,21 @@ def take_top_n(tfidf,num):
     top={}
     for pony in tfidf:
         x=tfidf[pony]
-        top[pony]=dict(sorted(x.items(), key=lambda item: item[1],reverse=True)[:num])
+        top[pony]=list(dict(sorted(x.items(), key=lambda item: item[1],reverse=True)[:num]).keys())
     return top
 def main():
     parser=argparse.ArgumentParser()
+    parser.add_argument('-p',help='if you choose to calculate idf in a meaningful way.',action='store_true')
     parser.add_argument('word_count',help='the words count file(.json)')
     parser.add_argument('out_num',help='number of output you want.')
 
     args=parser.parse_args()
 
     count=load_json(args.word_count)
-    idf=cal_idf(count)
+    if args.p == False:
+        idf=cal_idf(count)
+    else:
+        idf=cal_idf_p(count)
     tf_idf=tfidf(count,idf)
     result=take_top_n(tf_idf, int(args.out_num))
     
